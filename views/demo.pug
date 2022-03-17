@@ -1,0 +1,22 @@
+doctype html
+head
+  title CarMax Demo
+  meta(charset='utf-8')
+  // polyfill.io only loads the polyfills your browser needs
+  script(src='https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise')
+  //
+    Alternatively, use polyfills hosted on the Box CDN
+    <script src="https://cdn01.boxcdn.net/polyfills/bluebird/3.5.1/bluebird.min.js"></script>
+  // Latest version of Box Content Preview for en-US locale
+  script(src='https://cdn01.boxcdn.net/platform/preview/2.81.0/en-US/preview.js')
+  link(rel='stylesheet' href='https://cdn01.boxcdn.net/platform/preview/2.81.0/en-US/preview.css')
+h1 Box UI Elements - Content Previewer
+.preview-container(style='height:600px; width:50%')
+script.
+  var preview = new Box.Preview();
+  preview.show("[FILE_ID]", '!{token}', {
+  container: ".preview-container",
+  logoUrl: 'https://1000logos.net/wp-content/uploads/2021/09/CarMax-Logo.png',
+  //- showAnnotations: true,
+  //- showDownload: true,
+  });
