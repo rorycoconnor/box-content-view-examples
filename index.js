@@ -6,48 +6,43 @@ const axios = require('axios');
 const fs = require('fs')
 
 var BoxSDK = require('box-node-sdk');
-const fileID = '[FILE_ID]'
-
-// Initialize the SDK with your app credentials
-var sdk = new BoxSDK({
-  clientID: '[BOX_VIEW_API_CLIENT_ID]',
-  clientSecret: ''
-});
+const folderID = "0";
 
 app.use(express.static('files'));
 
-const embedSDK = new BoxSDK({
-    clientID: '[CLIENT_ID]',
-    clientSecret: '[CLIENT_SECRET]'
-})
+// const embedSDK = new BoxSDK({
+//     clientID: 'h0dk0u7e2w732cnzklz0mzyyo8embqwh',
+//     clientSecret: 'jgqBiUKvE8DkaCxtN0VLqEVsQdUJXi7j'
+// })
 
-const embedToken = 'Ohau921NikxAbEt8PwfSDFnSpNc7fkkN'
+// const embedToken = '98akMgEFYmYDXD7aJ0Am6wWb6lSGrLGd'
 
 // Create a basic API client, which does not automatically refresh the access token
-var client = sdk.getBasicClient('[BOX VIEW TOKEN]');
 
-const embedClient = embedSDK.getBasicClient(embedToken)
+// const embedClient = embedSDK.getBasicClient(embedToken)
+
+var jsonConfig = require('./box_app_config.json');
+var sdk = BoxSDK.getPreconfiguredInstance(jsonConfig);
+
+var serviceAccountClient = sdk.getAppAuthClient('enterprise');
 app.set('view engine', 'pug');
 
-app.get('/', (req, res) => {
-    // res.sendFile(path.join(__dirname+'/demo.html'));
-    res.render('demo', { token: embedToken, file: fileID})
-})
+app.get('/', async (req, res) => {
+   
+    //Use this space to get a user Access Token.
+    // const userClient = sdk.getAppAuthClient('user', '11754509499')
+    const tokens = await sdk.getAppUserTokens('11754509499')
+    console.log(tokens)
+    // userClient.users.get(userClient.CURRENT_USER_ID)
+    //     .then(result => {
+    //         console.log(result)
+    //     }).catch(e => {
+    //         console.log('e', e)
+    //     })
 
-app.get('/view', async (req, res) => {
-    await client.files.getEmbedLink(fileID)
-        .then(embedURL => {
+    
 
-            res.render('view', { title: 'Box View Demo', url: embedURL})
-        })
-})
-
-app.get('/embed', async (req, res) => {
-    await embedClient.files.getEmbedLink(fileID)
-        .then(embedURL => {
-            console.log(embedURL)
-            res.render('embed', { title: 'Box View Demo', url: embedURL})
-        })
+    res.render('demo', { token: tokens.accessToken, folder: folderID})
 })
 
 
